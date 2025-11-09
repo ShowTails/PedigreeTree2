@@ -98,7 +98,9 @@ svg {
   margin: 0 auto !important;
 }
 
-
+#logo {
+  outline: 2px dashed red;
+}
 
 
     #print-btn,
@@ -131,21 +133,31 @@ function getParam(name) {
   <div id="pedigree-container">
 <svg id="pedigree-svg" viewBox="-80 -120 1750 1450" preserveAspectRatio="xMidYMid meet">
 
+<!-- Header with larger logo and raised rabbitry info -->
+<g id="header" transform="translate(100, -40)">
+  <!-- Larger logo -->
+  <image
+    id="logo"
+    x="0"
+    y="-60"
+    width="140"
+    height="140"
+    preserveAspectRatio="xMidYMid meet"
+  />
+
+  <!-- Rabbitry info raised slightly -->
+  <g transform="translate(160, -10)">
+    <text x="0" y="0" text-anchor="start" class="title" data-field="rabbitry"></text>
+    <text x="0" y="20" text-anchor="start" class="name" data-field="street"></text>
+    <text x="0" y="40" text-anchor="start" class="name" data-chain="city,state,zip"></text>
+    <text x="0" y="60" text-anchor="start" class="name" data-field="phone"></text>
+    <text x="0" y="80" text-anchor="start" class="name" data-field="email"></text>
+    <text x="0" y="110" text-anchor="start" class="name">Breed:</text>
+    <text x="60" y="110" text-anchor="start" class="name" data-field="breed"></text>
+  </g>
+</g>
 
 
-
-    <image id="logo" x="40" y="-100" width="120" height="120" preserveAspectRatio="xMinYMin meet"></image>
-    <g transform="translate(155,30)">
-      <text x="40" y="-100" text-anchor="left" class="name" data-field="rabbitry"></text>
-      <text x="40" y="-80" text-anchor="left" class="name" data-field="street"></text>
-      <text x="40" y="-60" text-anchor="left" class="name" data-chain="city,state,zip"></text>
-      <text x="40" y="-40" text-anchor="left" class="name" data-field="phone"></text>
-      <text x="40" y="-20" text-anchor="left" class="name" data-field="email"></text>
-
-      <text x="20" y="40" text-anchor="left" class="name">Breed:</text>
-      <text x="80" y="40" text-anchor="left" class="name" data-field="breed"></text>
-      
-    </g>
 
     <!-- Signature / authenticity bottom-left -->
     <g transform="translate(20,740)">
@@ -153,16 +165,14 @@ function getParam(name) {
       <line x1="40" y1="260" x2="350" y2="260" stroke="#000" stroke-width="1" />
       <text class="name" x="40" y="280">Breeder's Signature</text>
     </g>
-  <!-- Signature image -->
-<image
+  <image
   id="signature"
   x="40"
-  y="250"
+  y="950"
   width="220"
   height="80"
   preserveAspectRatio="xMidYMid meet"
 />
-  
 
   <!-- GEN 1 - Base Rabbit -->
   <rect x="100" y="380" width="220" height="90" class="box"/>
@@ -180,7 +190,7 @@ function getParam(name) {
   <text x="110" y="480" text-anchor="left" class="label">Reg#:</text>
   <text x="150" y="480" text-anchor="left" data-field="reg"></text>
   <text x="270" y="480" text-anchor="left" class="label">GC#:</text>
-  <text x="3100" y="480" text-anchor="left" data-field="gc"></text>
+  <text x="310" y="480" text-anchor="left" data-field="gc"></text>
   <text x="110" y="500" text-anchor="left" class="label">DOB:</text>
   <text x="150" y="500" text-anchor="left" data-field="dob"></text>
   
@@ -201,7 +211,7 @@ function getParam(name) {
   <text x="680" y="160" text-anchor="left" data-field="sweight"></text>
   <text x="460" y="180" text-anchor="left" class="label">Sex:</text>
   <text x="500" y="180" text-anchor="left" data-field="ssex"></text>
-  <text x="6200" y="180" text-anchor="left" class="label">Legs:</text>
+  <text x="620" y="180" text-anchor="left" class="label">Legs:</text>
   <text x="680" y="180" text-anchor="left" data-field="slegs"> </text>
   <text x="460" y="200" text-anchor="left" class="label">Reg#:</text>
   <text x="500" y="200" text-anchor="left" data-field="sreg"></text>
@@ -826,8 +836,7 @@ function enablePinchZoom() {
 })();
 </script>
 
-  
-<script>
+  <script>
 const params = new URLSearchParams(window.location.search);
 
 function setSvgImage(id, paramName) {
@@ -864,166 +873,4 @@ document.querySelectorAll('.box').forEach(box => {
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
