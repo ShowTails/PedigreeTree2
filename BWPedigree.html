@@ -826,6 +826,14 @@ function enablePinchZoom() {
     const logoEl = document.getElementById('logo');
     logoEl.setAttribute('href', decoded);
   }
+
+   // Load breeder signature if provided
+const signatureUrl = params.get('signature');
+if (signatureUrl) {
+  const decoded = decodeURIComponent(signatureUrl);
+  const sigEl = document.getElementById('signature');
+  if (sigEl) sigEl.setAttribute('href', decoded);
+} 
 </script>
 
 
