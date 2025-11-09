@@ -153,6 +153,15 @@ function getParam(name) {
       <line x1="40" y1="260" x2="350" y2="260" stroke="#000" stroke-width="1" />
       <text class="name" x="40" y="280">Breeder's Signature</text>
     </g>
+  <!-- Signature image -->
+<image
+  id="signature"
+  x="40"
+  y="180"
+  width="220"
+  height="80"
+  preserveAspectRatio="xMidYMid meet"
+/>
   
 
   <!-- GEN 1 - Base Rabbit -->
@@ -818,23 +827,25 @@ function enablePinchZoom() {
 </script>
 
   
-  <script>
-  const params = new URLSearchParams(window.location.search);
-  const logoUrl = params.get('logo');
-  if (logoUrl) {
-    const decoded = decodeURIComponent(logoUrl);
-    const logoEl = document.getElementById('logo');
-    logoEl.setAttribute('href', decoded);
-  }
+<script>
+const params = new URLSearchParams(window.location.search);
 
-   // Load breeder signature if provided
-const signatureUrl = params.get('signature');
-if (signatureUrl) {
-  const decoded = decodeURIComponent(signatureUrl);
-  const sigEl = document.getElementById('signature');
-  if (sigEl) sigEl.setAttribute('href', decoded);
-} 
+function setSvgImage(id, paramName) {
+  const url = params.get(paramName);
+  if (!url) return;
+  const decoded = decodeURIComponent(url);
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Set both modern and legacy attributes for cross-browser support
+  el.setAttribute('href', decoded);
+  el.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', decoded);
+}
+
+// Load logo and signature
+setSvgImage('logo', 'logo');
+setSvgImage('signature', 'signature');
 </script>
+
 
 
   <script>
