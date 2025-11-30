@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 
    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  
+
   <title>4-Generation Rabbit Pedigree</title>
 <style>
   html, body {
@@ -16,12 +16,13 @@
     background: white;
   }
 
- #pedigree-container {
+#pedigree-container {
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   overflow: hidden;
   background: white;
 }
@@ -29,16 +30,20 @@
 
 svg {
   display: block;
-  width: 100% !important;     /* slightly under full width to stay on one page */
-  height: 100% !important;       /* scale height proportionally */
-  max-height: 8.3in !important;
-  max-width: 11.5in !important;  /* ensure it fits within page bounds */
+  width: 100% !important;
+  height: 100% !important;
+  /* UPDATED: Removed restrictive max-height/max-width to prevent viewBox shrinkage */
   transform: none !important;
-  margin: 0.1in auto 0 !important;
+  margin: 0 auto !important;
   background: white !important;
   page-break-inside: avoid !important;
-    touch-action: none !important;       
-  -ms-touch-action: none !important;   
+    touch-action: none !important;
+  -ms-touch-action: none !important;
+}
+
+#background-image {
+  pointer-events: none;
+
 }
 
 
@@ -63,6 +68,11 @@ svg {
   .name { font-weight: bold; font-size: 16px; }
   .title { font-weight: bold; font-size: 20px; }
 
+  .credit {
+    font-size: 12px;
+    fill: #000;
+  }
+
   @page {
     size: 11in 8.5in landscape;
     margin: 0;
@@ -70,37 +80,52 @@ svg {
 
   @media print {
     html, body {
-      width: 11in;
-      height: 8.5in;
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
-      overflow: visible;
+      overflow: hidden !important;
       background: white;
     }
 
     /* Center the pedigree on the page */
-#pedigree-container {
-  width: 11in;
-  height: 8.5in;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  background: white;
-}
+    #pedigree-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      background: white;
+      overflow: hidden; /* Prevent second page generation */
+    }
 
-svg {
-  width: 10.8in !important;
-  height: 8.3in !important;
-  transform: none !important;
-  background: white !important;
-  margin: 0 auto !important;
-}
+    svg {
+      width: 100% !important;
+      height: 100% !important;
+      transform: none !important;
+      background: white !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    
+    /* ADDED FIX: Force SVG content to display without unintended transforms in print */
+    #pedigree-container svg {
+      transform: scale(1) translate(0, 0) !important;
+      position: absolute !important; 
+      top: 0;
+      left: 0;
+    }
+    
+    #pedigree-container > * {
+      transform: none !important;
+    }
 
-#logo {
-  outline: 2px dashed red;
-}
+    #logo {
+
+    }
 
 
     #print-btn,
@@ -108,6 +133,7 @@ svg {
       display: none !important;
     }
   }
+
 
 </style>
 
@@ -129,23 +155,29 @@ function getParam(name) {
 </script>
 </head>
 <body>
-  
-  <div id="pedigree-container">
-<svg id="pedigree-svg" viewBox="-80 -120 1750 1450" preserveAspectRatio="xMidYMid meet">
 
-<!-- Header with larger logo and raised rabbitry info -->
+  <div id="pedigree-container">
+<svg id="pedigree-svg" viewBox="-80 -170 1750 1400" preserveAspectRatio="none">
+
+<image
+  id="background-image"
+  x="-125"
+  y="-290"
+  width="1800"
+  height="1500"
+  preserveAspectRatio="xMidYMid meet"
+/>
+
 <g id="header" transform="translate(100, -40)">
-  <!-- Larger logo -->
   <image
     id="logo"
     x="0"
-    y="-60"
+    y="-40"
     width="140"
     height="140"
     preserveAspectRatio="xMidYMid meet"
   />
 
-  <!-- Rabbitry info raised slightly -->
   <g transform="translate(160, -10)">
     <text x="0" y="0" text-anchor="start" class="title" data-field="rabbitry"></text>
     <text x="0" y="20" text-anchor="start" class="name" data-field="street"></text>
@@ -159,7 +191,6 @@ function getParam(name) {
 
 
 
-    <!-- Signature / authenticity bottom-left -->
     <g transform="translate(20,740)">
       <text class="name" x="40" y="200">I hereby certify that this pedigree is correct to the best of my knowledge.</text>
       <line x1="40" y1="260" x2="350" y2="260" stroke="#000" stroke-width="1" />
@@ -174,7 +205,6 @@ function getParam(name) {
   preserveAspectRatio="xMidYMid meet"
 />
 
-  <!-- GEN 1 - Base Rabbit -->
   <rect x="100" y="380" width="220" height="90" class="box"/>
   <text x="110" y="400" text-anchor="left" class="name" data-chain="crabbitry,name"></text>
   <text x="110" y="420" text-anchor="left" class="label">Color:</text>
@@ -195,12 +225,9 @@ function getParam(name) {
   <text x="150" y="500" text-anchor="left" data-field="dob"></text>
   
 
-  <!-- Lines Gen1 → Gen2 -->
   <line x1="420" y1="440" x2="450" y2="165" stroke="black"/>
   <line x1="420" y1="440" x2="450" y2="715" stroke="black"/>
 
-  <!-- GEN 2 -->
-  <!-- Sire -->
   <rect x="450" y="100" width="220" height="90" class="box male" data-slot="sire"/>
   <text x="460" y="120" text-anchor="left" class="name" data-chain="srabbitry,sire"></text>
   <text x="460" y="140" text-anchor="left" class="label">Color:</text>
@@ -222,11 +249,9 @@ function getParam(name) {
  
 
   
-  <!-- Lines Gen2 → Gen3 -->
   <line x1="770" y1="165" x2="800" y2="35" stroke="black"/>
   <line x1="770" y1="165" x2="800" y2="300" stroke="black"/>
 
-  <!-- Dam -->
   <rect x="450" y="650" width="200" height="90" class="box female"/>
   <text x="460" y="670" text-anchor="left" class="name" data-chain="drabbitry,dam"></text>
   <text x="460" y="690" text-anchor="left" class="label">Color:</text>
@@ -248,13 +273,9 @@ function getParam(name) {
 
 
 
-  <!-- Lines Gen2 → Gen3 -->
   <line x1="770" y1="715" x2="800" y2="580" stroke="black"/>
   <line x1="770" y1="715" x2="800" y2="850" stroke="black"/>
 
-  <!-- GEN 3 -->
-
-  <!-- Sire - Grand Sire -->
   <rect x="800" y="-35" width="200" height="90" class="box male"/>
   <text x="810" y="-15" text-anchor="left" class="name" data-chain="ssrabbitry,ssire"></text>
   <text x="810" y="5" text-anchor="left" class="label">Color:</text>
@@ -275,11 +296,9 @@ function getParam(name) {
   <text x="850" y="85" text-anchor="left" data-field="ssdob"></text>
 
   
-  <!-- Lines Gen3 → Gen4 --> 
   <line x1="1120" y1="35" x2="1150" y2="-35" stroke="black"/>
   <line x1="1120" y1="35" x2="1150" y2="100" stroke="black"/>
   
-  <!-- Sire - Grand Dam -->
   <rect x="800" y="235" width="200" height="90" class="box female"/>
   <text x="810" y="255" text-anchor="left" class="name" data-chain="sdrabbitry,sdam"></text>
   <text x="810" y="275" text-anchor="left" class="label">Color:</text>
@@ -300,11 +319,9 @@ function getParam(name) {
   <text x="850" y="355" text-anchor="left" data-field="sddob"></text>
   
 
-  <!-- Lines Gen3 → Gen4 -->
   <line x1="1120" y1="300" x2="1150" y2="235" stroke="black"/>
   <line x1="1120" y1="300" x2="1150" y2="370" stroke="black"/>
   
-  <!-- Dam - Grand Sire -->
   <rect x="800" y="515" width="200" height="90" class="box male"/>
   <text x="810" y="535" text-anchor="left" class="name" data-chain="dsrabbitry,dsire"></text>
   <text x="810" y="555" text-anchor="left" class="label">Color:</text>
@@ -325,11 +342,9 @@ function getParam(name) {
   <text x="850" y="635" text-anchor="left" data-field="dsdob"></text>
   
 
-  <!-- Lines Gen3 → Gen4 -->
   <line x1="1120" y1="580" x2="1150" y2="515" stroke="black"/>
   <line x1="1120" y1="580" x2="1150" y2="650" stroke="black"/>
   
-  <!-- Dam - Grand Dam -->
   <rect x="800" y="785" width="200" height="90" class="box female"/>
   <text x="810" y="805" text-anchor="left" class="name" data-chain="ddrabbitry,ddam"></text>
   <text x="810" y="825" text-anchor="left" class="label">Color:</text>
@@ -350,14 +365,9 @@ function getParam(name) {
   <text x="850" y="905" text-anchor="left" data-field="dddob"></text>
   
   
-  <!-- Lines Gen3 → Gen4 -->
   <line x1="1120" y1="850" x2="1150" y2="785" stroke="black"/>
   <line x1="1120" y1="850" x2="1150" y2="920" stroke="black"/>
 
-  <!-- GEN 4 -->
-
-
-  <!-- Sire - Grand Sire - Great Grand Sire -->
   <rect x="1150" y="-100" width="200" height="90" class="box male"/>
   <text x="1160" y="-80" text-anchor="left" class="name" data-chain="sssrabbitry,sssire"></text>
   <text x="1160" y="-60" text-anchor="left" class="label">Color:</text>
@@ -378,7 +388,6 @@ function getParam(name) {
   <text x="1200" y="20" text-anchor="left" data-field="sssdob"></text>
   
 
-  <!-- Sire - Grand Sire - Great Grand Dam -->
   <rect x="1150" y="35" width="200" height="90" class="box female"/>
   <text x="1160" y="55" text-anchor="left" class="name" data-chain="ssdrabbitry,ssdam"></text>
   <text x="1160" y="75" text-anchor="left" class="label">Color:</text>
@@ -397,9 +406,7 @@ function getParam(name) {
   <text x="1380" y="135" text-anchor="left" data-field="ssdgc"></text>
   <text x="1160" y="155" text-anchor="left" class="label">DOB:</text>
   <text x="1200" y="155" text-anchor="left" data-field="ssddob"></text>
-
  
-  <!-- Sire - Grand Dam - Great Grand Sire -->
   <rect x="1150" y="170" width="200" height="90" class="box male"/>
   <text x="1160" y="190" text-anchor="left" class="name" data-chain="sdsrabbitry,sdsire"></text>
   <text x="1160" y="210" text-anchor="left" class="label">Color:</text>
@@ -420,7 +427,6 @@ function getParam(name) {
   <text x="1200" y="290" text-anchor="left" data-field="sdsdob"></text>
 
 
-  <!-- Sire - Grand Dam - Great Grand Dam -->
   <rect x="1150" y="305" width="200" height="90" class="box female"/>
   <text x="1160" y="325" text-anchor="left" class="name" data-chain="sddrabbitry,sddam"></text>
   <text x="1160" y="345" text-anchor="left" class="label">Color:</text>
@@ -441,7 +447,6 @@ function getParam(name) {
   <text x="1200" y="425" text-anchor="left" data-field="sdddob"></text>
 
   
-  <!-- Dam - Grand Sire - Great Grand Sire -->
   <rect x="1150" y="450" width="200" height="90" class="box male"/>
  <text x="1160" y="470" text-anchor="left" class="name" data-chain="dssrabbitry,dssire"></text>
   <text x="1160" y="490" text-anchor="left" class="label">Color:</text>
@@ -462,7 +467,6 @@ function getParam(name) {
   <text x="1200" y="570" text-anchor="left" data-field="dssdob"></text>
 
 
-  <!-- Dam - Grand Sire - Grand Grand Dam -->
   <rect x="1150" y="585" width="200" height="90" class="box female"/>
   <text x="1160" y="605" text-anchor="left" class="name" data-chain="dsdrabbitry,dsdam"></text>
   <text x="1160" y="625" text-anchor="left" class="label">Color:</text>
@@ -483,7 +487,6 @@ function getParam(name) {
   <text x="1200" y="705" text-anchor="left" data-field="dsddob"></text>
 
 
-  <!-- Dam - Grand Dam - Great Grand Sire-->
   <rect x="1150" y="720" width="200" height="90" class="box male"/>
   <text x="1160" y="740" text-anchor="left" class="name" data-chain="ddsrabbitry,ddsire"></text>
   <text x="1160" y="760" text-anchor="left" class="label">Color:</text>
@@ -504,7 +507,6 @@ function getParam(name) {
   <text x="1200" y="840" text-anchor="left" data-field="ddsdob"></text>
 
 
-  <!-- Dam - Grand Dam - Great Grand Dam-->
   <rect x="1150" y="855" width="200" height="90" class="box female"/>
   <text x="1160" y="875" text-anchor="left" class="name" data-chain="dddrabbitry,dddam"></text>
   <text x="1160" y="895" text-anchor="left" class="label">Color:</text>
@@ -524,8 +526,15 @@ function getParam(name) {
   <text x="1160" y="975" text-anchor="left" class="label">DOB:</text>
   <text x="1200" y="975" text-anchor="left" data-field="ddddob"></text>
 
-    
- 
+  <text
+    id="pedigree-credit"
+    class="credit"
+    x="1150"
+    y="1000"
+    text-anchor="end"
+    aria-label="Pedigree credit">
+    Pedigree built on the ShowTails LLC platform - www.showtails.com
+  </text>
 </svg>
 </div>
   <button id="print-btn" style="
@@ -541,10 +550,7 @@ function getParam(name) {
 ">Print / Save PDF</button>
 
 
-<!-- Your data/field logic -->
-
-  
-  <script src="pedigree.js"></script>
+<script src="pedigree.js"></script>
   
 <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
 
@@ -560,22 +566,36 @@ function getParam(name) {
   let panZoom = null;
   let initialized = false;
 
-  function fitToContainer() {
-    if (!panZoom) return;
+  function computeFit() {
     const vb = svg.viewBox.baseVal;
-    if (!validBox(vb)) return;
+    if (!validBox(vb)) return null;
+
     const cw = container.clientWidth;
     const ch = container.clientHeight;
-    if (!cw || !ch) return;
+    if (!cw || !ch) return null;
 
     const scale = Math.min(cw / vb.width, ch / vb.height);
-    if (isFinite(scale) && scale > 0) {
-      panZoom.zoom(scale);
-      panZoom.pan({
+    if (!isFinite(scale) || scale <= 0) return null;
+
+    return {
+      scale,
+      pan: {
         x: (cw - vb.width * scale) / 2,
         y: (ch - vb.height * scale) / 2
-      });
-    }
+      }
+    };
+  }
+
+  // Expose so other scripts (e.g., print helpers) can reuse the exact fit math
+  window.computeFit = computeFit;
+
+  function fitToContainer() {
+    if (!panZoom) return;
+    const fit = computeFit();
+    if (!fit) return;
+
+    panZoom.zoom(fit.scale);
+    panZoom.pan(fit.pan);
   }
 
   function tryInit() {
@@ -734,8 +754,8 @@ function enablePinchZoom() {
     // Reset to full view, center, and apply perfect print scale
     inst.resetZoom();
     inst.center();
-    inst.zoom(1.55);
-    inst.pan({ x: 60, y: 120 });
+    inst.zoom(1.45);
+    inst.pan({ x: 55, y: 125 });
   }
 
   function restoreAfterPrint() {
@@ -762,79 +782,11 @@ function enablePinchZoom() {
     });
   });
 })();
+
 </script>
 
    
-  <script>
-      /* === Mobile Print === */
-(function() {
-  const btn = document.getElementById("print-btn");
-  if (!btn) return;
 
-  btn.addEventListener("click", (event) => {
-    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    if (!isMobile) return; // only affects mobile
-
-    event.preventDefault();
-
-    const container = document.getElementById("pedigree-container");
-    if (!container) return;
-
-    // Grab the current SVG markup
-    const svgMarkup = container.innerHTML;
-
-    // Also grab all styles from the main document
-    const styleBlocks = Array.from(document.querySelectorAll('style'))
-      .map(styleEl => styleEl.outerHTML)
-      .join('\n');
-
-    const popup = window.open("", "_blank", "width=1200,height=800");
-    if (!popup) {
-      alert("Please allow pop-ups for ShowTails to print pedigrees.");
-      return;
-    }
-
-    popup.document.write(`
-      <html>
-        <head>
-          <title>Print Pedigree</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          ${styleBlocks}
-          <style>
-            @page { size: landscape; margin: 0; }
-            html, body {
-              width: 11in;
-              height: 8.5in;
-              margin: 0;
-              padding: 0;
-              background: white;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-            svg {
-              width: 10.8in !important;
-              height: 8.3in !important;
-              background: white !important;
-              margin: auto;
-              display: block;
-            }
-          </style>
-        </head>
-        <body>${svgMarkup}</body>
-      </html>
-    `);
-    popup.document.close();
-
-    // Wait for the SVG to render, then open print dialog
-    setTimeout(() => {
-      popup.focus();
-      popup.print();
-      setTimeout(() => popup.close(), 1500);
-    }, 600);
-  });
-})();
-</script>
 
   <script>
 const params = new URLSearchParams(window.location.search);
@@ -848,14 +800,121 @@ function setSvgImage(id, paramName) {
   // Set both modern and legacy attributes for cross-browser support
   el.setAttribute('href', decoded);
   el.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', decoded);
+
 }
 
 // Load logo and signature
 setSvgImage('logo', 'logo');
 setSvgImage('signature', 'signature');
+setSvgImage('background-image', 'background-image');
 </script>
 
+<script>
+      /* === Mobile Print (POPUP WINDOW FIX) === */
+(function() {
+  const btn = document.getElementById("print-btn");
+  if (!btn) return;
 
+  btn.addEventListener("click", (event) => {
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    if (!isMobile) return; // only affects mobile
+
+    event.preventDefault();
+
+    const container = document.getElementById("pedigree-container");
+    const inst = window.panZoomInstance;
+
+    if (!container || !inst) return;
+
+    // 1. SAVE the current view state
+    const savedState = { pan: inst.getPan(), zoom: inst.getZoom() };
+
+    // 2. APPLY the desired print state
+    inst.resetZoom(); 
+    // Use the optimized scale/pan values (These values look correct for a landscape fit)
+    inst.zoom(2.65); 
+    inst.pan({ x: 65, y: 100});
+    
+    // Give the panZoom library a moment to apply the transform to the DOM
+    requestAnimationFrame(() => {
+        // 3. RETRIEVE the *transformed* SVG markup
+        const svgMarkup = container.innerHTML;
+
+        // 4. RESTORE the original view state in the main window *immediately*
+        inst.zoom(savedState.zoom);
+        inst.pan(savedState.pan);
+        
+        // Grab all styles from the main document
+        const styleBlocks = Array.from(document.querySelectorAll('style'))
+          .map(styleEl => styleEl.outerHTML)
+          .join('\n');
+
+        const popup = window.open("", "_blank", "width=1200,height=800");
+        if (!popup) {
+          alert("Please allow pop-ups for ShowTails to print pedigrees.");
+          return;
+        }
+        
+        // Write the HTML for the print popup
+        popup.document.write(`
+          <html>
+            <head>
+              <title>Print Pedigree</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1.2">
+              ${styleBlocks}
+              <style>
+                @page { size: landscape; margin: 0; }
+                html, body {
+                  width: 10.25in;
+                  height: 7.4in;
+                  overflow: hidden;
+                  margin: 0;
+                  padding: 0;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+  
+                }
+                /* New container style to force print area and prevent second page */
+                #pedigree-container {
+                    width: 10.25in;
+                    height: 7.4in;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                }
+                svg {
+                  width: 10.25in !important;
+                  height: 7.4in !important;
+                  background: white !important;
+                  margin: 0;
+                  display: block;
+                  /* Keep the full background visible and centered */
+                  transform: none !important;
+                }
+              </style>
+            </head>
+            <body>
+              <div id="pedigree-container">${svgMarkup}</div>
+            </body>
+          </html>
+        `);
+        popup.document.close();
+
+        // Wait for the SVG to render, then open print dialog
+        setTimeout(() => {
+          popup.focus();
+          popup.print();
+          setTimeout(() => popup.close(), 1500);
+        }, 600);
+    });
+  });
+})();
+</script>
 
   <script>
 // === Glide-safe Clickable Pedigree Boxes ===
@@ -873,4 +932,3 @@ document.querySelectorAll('.box').forEach(box => {
 </body>
 
 </html>
-
