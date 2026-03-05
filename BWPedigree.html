@@ -919,6 +919,29 @@ setSvgImage('background-image', 'background-image');
 </script>
 
   <script>
+function setSvgMultilineText(textEl, raw) {
+  if (!textEl) return;
+
+  // URLSearchParams already decoded %0A into \n, but this also covers literal "\n"
+  const lines = String(raw || "").replace(/\\n/g, "\n").split("\n");
+
+  // Clear existing content
+  while (textEl.firstChild) textEl.removeChild(textEl.firstChild);
+
+  const x = textEl.getAttribute("x") || 0;
+  const lineHeight = 14; // adjust as needed
+
+  lines.forEach((line, i) => {
+    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    tspan.setAttribute("x", x);
+    tspan.setAttribute("dy", i === 0 ? "0" : String(lineHeight));
+    tspan.textContent = line;
+    textEl.appendChild(tspan);
+  });
+}
+</script>
+
+  <script>
 // === Glide-safe Clickable Pedigree Boxes ===
 document.querySelectorAll('.box').forEach(box => {
   box.style.cursor = 'pointer';
